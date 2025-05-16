@@ -1,0 +1,56 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: cimg/python:3.10
+
+    working_directory: ~/repo
+
+    steps:
+      # Step 1: obtain repo from GitHub
+      - checkout
+
+      # Step 2: create virtual env and install dependencies
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+
+      # Step 3: run tests and generate coverage
+      - run:
+          name: run tests and generate coverage
+          command: |
+            . venv/bin/activate
+            mkdir -p test-results 
+            mkdir -p coverage_html
+            mkdir -p important-coverage
+
+            # Running tests and generating coverage reports
+            coverage run -m pytest --junitxml=test-results/results.xml
+            coverage report -m
+            coverage html -d coverage_html
+
+            # Checking the contents of the coverage_html to ensure proper HTML file generation
+            ls -al coverage_html
+
+            # Copy only desired files to a clean artifact directory
+            cp coverage_html/z_*deeplabv3nn_py.html important-coverage/
+            cp coverage_html/z_*deeplabv3nnwrapper_py.html important-coverage/
+
+            # Copy CSS and JS files to the important-coverage directory
+            cp coverage_html/*.css important-coverage/
+            cp coverage_html/*.js important-coverage/
+
+      # Step 4: store test results
+      - store_test_results:
+          path: test-results
+
+      # Step 5: store useful artifacts for debugging
+      - store_artifacts:
+          path: test-results
+          destination: test-results
+      - store_artifacts:
+          path: important-coverage
+          destination: important-coverage
