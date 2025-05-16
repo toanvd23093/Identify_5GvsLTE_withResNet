@@ -2,7 +2,7 @@ import src.deeplabv3nn as dlv3nn
 import src.deeplabv3nnwrapper as dlv3nnwrapper
 import os
 
-# Test Points
+# Test Construct Model Method
 def test_construct_model():
     networkBackbone = 'resnet50'
     weightsFileName = os.path.join(os.path.dirname(__file__), "..", "mockData", "specsenselabv3.pth")
@@ -14,7 +14,7 @@ def test_construct_model():
     # Compare structure only
     assert str(model_Act) == str(model_Exp), "Model structures are different"
 
-
+# Test Setup Trainer Method
 def test_setup_trainer():
     networkBackbone = 'resnet50'
     weightsFileName = os.path.join(os.path.dirname(__file__), "..", "mockData", "defaultDeeplabv3.pth")
@@ -32,7 +32,7 @@ def test_setup_trainer():
     # Compare structure only
     assert str(model_Act) == str(model_Exp), "Model structures are different"
 
-
+# Test Info Method
 def test_info():
     networkBackbone = 'resnet50'
     num_layers, total_params = dlv3nnwrapper.info(networkBackbone,3)
@@ -40,7 +40,7 @@ def test_info():
     assert num_layers == 189, "Number of layers of ResNet50 should be 189"
     assert total_params == 41994822, "Total Params of ResNet50 should be 41994822"
 
-
+# Test Train/Validate/Test/Predict workflow
 def test_train_one_iteration_val_test_predict(loadMATLABData):
     networkBackbone = 'resnet50'
     weightsFileName = os.path.join(os.path.dirname(__file__), "..", "mockData", "defaultDeeplabv3.pth")
