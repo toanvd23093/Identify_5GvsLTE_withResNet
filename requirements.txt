@@ -5,5 +5,4 @@ pytest-cov
 pytest-benchmark
 torch
 torchvision
-os
 scipy
